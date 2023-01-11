@@ -11,6 +11,11 @@ body {
     background-color: var(--main-bg-color);
 }
 
+#login-button , #menu_app_title {
+        color: var(--primary-color);
+        font-weight: bold;
+}
+
 /* index */
 .index_button {
     border-radius: 20px;
@@ -18,6 +23,10 @@ body {
     color: var(--primary-color);
     min-height: 200px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
 }
 
 .index_button--primary {
@@ -39,6 +48,15 @@ body {
 .index_button--tertiary {
     background-color: var(--tertiary-color);
     color: white;
+}
+
+.index_button--title {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+#logo_github {
+    max-width: 70px;
 }
 
 
