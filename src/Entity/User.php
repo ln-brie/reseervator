@@ -43,10 +43,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Timesta
     #[ORM\Column(length: 255)]
     private ?string $alias = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Calendar::class)]
+    private Collection $calendars;
+
     public function __construct()
     {
         $this->rooms = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->calendars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,6 +191,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Timesta
     public function setAlias(string $alias): self
     {
         $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Calendar>
+     */
+    public function getCalendars(): Collection
+    {
+        return $this->calendars;
+    }
+
+    public function addCalendar(Calendar $calendar): self
+    {
+        if (!$this->calendars->contains($calendar)) {
+            $this->calendars->add($calendar);
+            $calendar->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCalendar(Calendar $calendar): self
+    {
+        if ($this->calendars->removeElement($calendar)) {
+            // set the owning side to null (unless already changed)
+            if ($calendar->getUser() === $this) {
+                $calendar->setUser(null);
+            }
+        }
 
         return $this;
     }
