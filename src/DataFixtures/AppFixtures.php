@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\CalendarFactory;
 use App\Factory\ReservationFactory;
 use App\Factory\RoomFactory;
 use App\Factory\UserFactory;
@@ -26,6 +27,16 @@ class AppFixtures extends Fixture
                 'applicant' => $applicant,
             ];
         });
+
+        CalendarFactory::createMany(
+            60,
+            function() {
+                return [
+                    'user' => UserFactory::random(),
+                    'room' => RoomFactory::randomRange(1,5)
+                ];
+            }
+        );
 
         $manager->flush();
     }

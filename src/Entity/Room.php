@@ -45,9 +45,13 @@ class Room implements TimestampableInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
+    #[ORM\ManyToMany(targetEntity: Calendar::class, mappedBy: 'room')]
+    private Collection $calendars;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->calendars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +168,33 @@ class Room implements TimestampableInterface
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Calendar>
+     */
+    public function getCalendars(): Collection
+    {
+        return $this->calendars;
+    }
+
+    public function addCalendar(Calendar $calendar): self
+    {
+        if (!$this->calendars->contains($calendar)) {
+            $this->calendars->add($calendar);
+            $calendar->addRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCalendar(Calendar $calendar): self
+    {
+        if ($this->calendars->removeElement($calendar)) {
+            $calendar->removeRoom($this);
+        }
 
         return $this;
     }
