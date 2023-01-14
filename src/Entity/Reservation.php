@@ -18,12 +18,12 @@ class Reservation implements TimestampableInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'startAt')]
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Room $room = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $startAt = null;
+    private ?\DateTimeImmutable $startsAt = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $endsAt = null;
@@ -61,14 +61,14 @@ class Reservation implements TimestampableInterface
         return $this;
     }
 
-    public function getStartAt(): ?\DateTimeImmutable
+    public function getStartsAt(): ?\DateTimeImmutable
     {
-        return $this->startAt;
+        return $this->startsAt;
     }
 
-    public function setStartAt(\DateTimeImmutable $startAt): self
+    public function setStartsAt(\DateTimeImmutable $startsAt): self
     {
-        $this->startAt = $startAt;
+        $this->startsAt = $startsAt;
 
         return $this;
     }

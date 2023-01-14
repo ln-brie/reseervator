@@ -51,7 +51,7 @@ final class ReservationFactory extends ModelFactory
             'endsAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'name' => self::faker()->words(5, true),
             'room' => null, // TODO add App\Entity\Room ORM type manually
-            'startAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'startsAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'applicantName' => self::faker()->name(),
             'comment' => self::faker()->text(100),
             'applicant' => null

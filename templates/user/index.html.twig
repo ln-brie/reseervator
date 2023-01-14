@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block body %}
+
+
+<div class="container">
+    <h1 class="text-light">Bienvenue {{ app.user.alias }} ! </h1>
+<div class="container d-grid gap-3 mt-4">
+    <a href="#" class="btn btn-dark ">Mon profil</a>
+    <a href="{{ path('app_user_rooms') }}" class="btn btn-dark">Mes salles</a>
+    <a href="#" class="btn btn-dark">Mes réservations</a>
+    <a href="#" class="btn btn-dark">Mes calendriers</a>
+</div>
+    
+</div>
+{% endblock %}

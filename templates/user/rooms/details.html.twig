@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<div class="container">
+
+    <h3>{{ room }}</h3>
+
+    <table class="table">
+        <tr>
+            <td>Adresse</td>
+            <td> {{ room.address }} </td>
+        </tr>
+        <tr>
+            <td>Commentaire</td>
+            <td> {{ room.comment }} </td>
+        </tr>
+        <tr>
+            <td>Couleur</td>
+            <td> {{ room.color }} </td>
+        </tr>
+        <tr>
+            <td>Réservable uniquement avec un compte utilisateur</td>
+            <td> {{ room.registeredReservationsOnly }} </td>
+        </tr>
+    </table>
+
+    <h4>Les réservations pour {{ room }}</h4>
+
+    <table class="table">
+        {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.name }}</td>
+                <td>{{ reservation.applicant != null ? reservation.applicant : reservation.applicantName }}</td>
+                <td>{{ reservation.startsAt|date('d-m-Y') }}</td>
+                <td>{{ reservation.endsAt|date('d-m-Y') }}</td>
+                <td>{{ reservation.comment }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h4>Les calendriers liés à {{ room }}</h4>
+    <table class="table">
+        {% for calendar in calendars %}
+        <tr>
+            <td>{{ calendar.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+</div>
+
+{% endblock %}

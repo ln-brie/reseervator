@@ -47,7 +47,9 @@ final class CalendarFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
-        return [];
+        return [
+            'name' => self::faker()->words(2, true),
+        ];
     }
 
     /**

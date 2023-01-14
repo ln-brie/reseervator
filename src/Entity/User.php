@@ -224,4 +224,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, Timesta
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->alias;
+    }
 }

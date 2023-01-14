@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<div class="container">
+    <h1>Mes salles</h1>
+
+    <table class="table">
+        {% for room in rooms %}
+        <tr>
+            <td>
+                {{ room.name }}
+            </td>
+            <td>
+                <a href="{{ path('app_user_room_details', {'id': room.id}) }}">Détails</a>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

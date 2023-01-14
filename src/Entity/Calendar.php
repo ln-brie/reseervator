@@ -6,10 +6,14 @@ use App\Repository\CalendarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Contract\Entity\TimestampableInterface;
+use Knp\DoctrineBehaviors\Model\Timestampable\TimestampableTrait;
 
 #[ORM\Entity(repositoryClass: CalendarRepository::class)]
-class Calendar
+class Calendar implements TimestampableInterface
 {
+    use TimestampableTrait;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,6 +25,9 @@ class Calendar
 
     #[ORM\ManyToMany(targetEntity: Room::class, inversedBy: 'calendars')]
     private Collection $room;
+
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
 
     public function __construct()
     {
@@ -64,6 +71,18 @@ class Calendar
     public function removeRoom(Room $room): self
     {
         $this->room->removeElement($room);
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
