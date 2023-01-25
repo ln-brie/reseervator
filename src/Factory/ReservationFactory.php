@@ -46,15 +46,15 @@ final class ReservationFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        $start = \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween('-1 year', '+1 year'));
+        $end = $start->modify('+'.rand(1,80).' hours');
         return [
             'approved' => self::faker()->boolean(),
-            'endsAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'endsAt' => $end,
             'name' => self::faker()->words(5, true),
-            'room' => null, // TODO add App\Entity\Room ORM type manually
-            'startsAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'startsAt' => $start,
             'applicantName' => self::faker()->name(),
             'comment' => self::faker()->text(100),
-            'applicant' => null
         ];
     }
 

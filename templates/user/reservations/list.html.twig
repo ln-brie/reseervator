@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="container">
+    <h1>Mes réservations</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Salle</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Commentaire</th>
+            </tr>
+        </thead>
+        {% for reservation in reservations %}
+        <tr>
+            <td>
+                {{ reservation.name }}
+            </td>
+            <td>
+                {{ reservation.room }}
+            </td>
+            <td>
+                {{ reservation.startsAt|date('d-m-Y H:s') }}
+            </td>
+            <td>
+                {{ reservation.endsAt|date('d-m-Y H:s') }}
+            </td>
+            <td>
+                {{ reservation.comment }}
+            </td>
+        </tr>
+
+        {% endfor %}
+    </table>
+    
+</div>
+
+{% endblock %}

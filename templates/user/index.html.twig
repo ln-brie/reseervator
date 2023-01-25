@@ -6,12 +6,12 @@
 
 
 <div class="container">
-    <h1 class="text-light">Bienvenue {{ app.user.alias }} ! </h1>
-<div class="container d-grid gap-3 mt-4">
-    <a href="#" class="btn btn-dark ">Mon profil</a>
-    <a href="{{ path('app_user_rooms') }}" class="btn btn-dark">Mes salles</a>
-    <a href="#" class="btn btn-dark">Mes réservations</a>
-    <a href="#" class="btn btn-dark">Mes calendriers</a>
+    <h1 class="text-light mb-5">Bienvenue {{ app.user.alias }} ! </h1>
+<div class="container d-grid gap-3 mt-4 col-8 mx-auto">
+    <a href="#" class="btn btn-success text-light "><strong>Mon profil</strong></a>
+    <a href="{{ path('app_user_rooms') }}" class="btn btn-success text-light"><strong>Mes salles</strong></a>
+    <a href="{{ path('app_user_reservations') }}" class="btn btn-success text-light"><strong>Mes réservations</strong></a>
+    <a href="#" class="btn btn-success text-light"><strong>Mes calendriers</strong></a>
 </div>
     
 </div>

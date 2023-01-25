@@ -49,6 +49,7 @@ final class CalendarFactory extends ModelFactory
     {
         return [
             'name' => self::faker()->words(2, true),
+            'isNative' => self::faker()->boolean()
         ];
     }
 

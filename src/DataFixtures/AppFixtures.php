@@ -13,13 +13,13 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        UserFactory::createMany(50);
-        RoomFactory::createMany(60, function() {
+        UserFactory::createMany(10);
+        RoomFactory::createMany(15, function() {
             return [
-                'owner' => UserFactory::random()
+                'owner' => UserFactory::random(),
             ];
         });
-        ReservationFactory::createMany(100, function() {
+        ReservationFactory::createMany(200, function() {
             $applicant = rand(1, 10) > 5 ? UserFactory::random() : null;
             
             return [
@@ -29,7 +29,7 @@ class AppFixtures extends Fixture
         });
 
         CalendarFactory::createMany(
-            60,
+            30,
             function() {
                 return [
                     'user' => UserFactory::random(),

@@ -8,14 +8,12 @@
         {% for room in rooms %}
         <tr>
             <td>
-                {{ room.name }}
-            </td>
-            <td>
-                <a href="{{ path('app_user_room_details', {'id': room.id}) }}">Détails</a>
+                <a class=" text-secondary text-decoration-none" href="{{ path('app_user_room_details', {'id': room.id}) }}">{{ room.name }}</a>
             </td>
         </tr>
 
         {% endfor %}
     </table>
+    <a href="{{ path('app_user_create_room') }}" class="btn btn-success">Créer une nouvelle salle</a>
 </div>
 {% endblock %}

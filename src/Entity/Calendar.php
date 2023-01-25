@@ -29,6 +29,9 @@ class Calendar implements TimestampableInterface
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\Column]
+    private ?bool $isNative = null;
+
     public function __construct()
     {
         $this->room = new ArrayCollection();
@@ -83,6 +86,18 @@ class Calendar implements TimestampableInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function isNative(): ?bool
+    {
+        return $this->isNative;
+    }
+
+    public function setIsNative(bool $isNative): self
+    {
+        $this->isNative = $isNative;
 
         return $this;
     }
