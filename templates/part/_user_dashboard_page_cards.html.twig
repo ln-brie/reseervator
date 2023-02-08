@@ -1,0 +1,8 @@
+{% extends "part/_user_dashboard_page.html.twig" %}
+
+{% block user_page_content %}
+<div class="d-flex flex-wrap justify-content-evenly g-3 overflow-hidden my-3">
+    {% block user_cards %}{% endblock %}
+</div>
+{% block user_cards_buttons %}{% endblock %}
+{% endblock %}

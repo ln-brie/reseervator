@@ -22,13 +22,16 @@ class RoomFormType extends AbstractType
                 'label' => 'Nom',
                 'required' => true
             ])
-            ->add('color', ColorType::class)
+            ->add('color', ColorType::class, [
+                'label' => 'Couleur'
+            ])
             ->add('address', TextType::class, [
                 'label' => 'Adresse',
                 'required' => false
             ])
             ->add('comment', TextareaType::class, [
-                'label' => 'Commentaire'
+                'label' => 'Commentaire',
+                'required' => false
             ])
             ->add('registeredReservationsOnly', ChoiceType::class, [
                 'label' => 'Réservable uniquement par les utilisateurs enregistrés',

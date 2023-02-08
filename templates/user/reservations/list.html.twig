@@ -1,11 +1,11 @@
-{% extends "base.html.twig" %}
+{% extends "part/_user_dashboard_page.html.twig" %}
 
-{% block body %}
 
-<div class="container">
-    <h1>Mes réservations</h1>
+{% block user_page_title %}Mes réservations{% endblock %}
+{% block user_page_content %}
 
-    <table class="table">
+<div class="container mt-5">
+    <table class="table text-primary">
         <thead>
             <tr>
                 <th>Nom</th>
@@ -13,6 +13,7 @@
                 <th>Début</th>
                 <th>Fin</th>
                 <th>Commentaire</th>
+                <th colspan="2">Actions</th>
             </tr>
         </thead>
         {% for reservation in reservations %}
@@ -32,10 +33,17 @@
             <td>
                 {{ reservation.comment }}
             </td>
+            <td> <a class="text-light" href="{{  path('app_user_update_reservation', {'id': reservation.id}) }}"><i class="fas fa-pencil-alt"></i></a></td>
+            <td><i class="fas fa-trash"></i></td>
         </tr>
 
         {% endfor %}
     </table>
+
+    <div class="my-4">
+        <a href="{{ path('app_user_new_reservation')}}">
+        <button class="btn btn-primary col-12">Nouvelle réservation</button></a>
+    </div>
     
 </div>
 
