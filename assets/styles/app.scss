@@ -1,0 +1,51 @@
+/* :root {
+  --main-bg-color: 
+  --secondary-bg-color: 
+  --primary-color:
+  --secondary-color: 
+  --tertiary-color:
+} */
+
+
+
+$primary: #264653;
+$secondary: #e9c46a;
+$success: #2a9d8f;
+$warning:#f4a261;
+$danger: #e76f51; 
+@import "~bootstrap/scss/bootstrap";
+
+body {
+    background-color: $primary;
+}
+
+
+
+/* index */
+.index_button {
+    border-radius: 20px;
+    background-color: white;
+    color: $primary;
+    min-height: 200px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.index_button--secondary {
+    height: 100%;
+} 
+
+.index_button--secondary img {
+    max-width: 80%;
+    margin: auto;
+}
+
+#logo_github {
+    max-width: 70px;
+}
+
+
+

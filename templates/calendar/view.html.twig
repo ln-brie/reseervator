@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ calendar.name }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="card bg-success p-5">
+
+        <h2 class="text-center text-light mb-5">{{calendar.name}}</h2>
+        <div class="d-flex">
+            <div class="col-2">
+                {% for room in rooms %}
+                <p style="color: {{ room.color }}"><i class="fa-solid fa-circle"></i> {{ room.name }}</p>
+
+                {% endfor %}
+            </div>
+
+            <div class="col-10" id="calendar" data-controller="calendar"
+                data-calendar-events-value="{{ reservations }}">
+            </div>
+        </div>
+    </div>
+    
+    {% include "calendar/modal.html.twig" %}
+
+
+</div>
+{% endblock %}

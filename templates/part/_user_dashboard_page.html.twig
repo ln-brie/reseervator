@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="card bg-success p-5">
+    <h1 class="text-light text-center"><strong>{% block user_page_title %}{% endblock %}</strong></h1>
+    
+    {% block user_page_content %}{% endblock %}
+
+
+</div>
+{% endblock %}

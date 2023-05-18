@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Reservation;
+use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,17 @@ class ReservationRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function get_date_conflicts($room, $start, $end) {
+        return $this->createQueryBuilder('r')
+        ->andWhere('r.room = :room')
+        ->andWhere(':start BETWEEN r.startsAt AND r.endsAt OR r.startsAt BETWEEN :start AND :end')
+        ->setParameter('end', $end)
+        ->setParameter('start', $start)
+        ->setParameter('room', $room)
+        ->getQuery()
+        ->getResult();
     }
 
 //    /**

@@ -6,37 +6,39 @@
 <div class="container index_page ">
         <div class="row g-3 overflow-hidden">
             <div class="col-4">
-                <div class="index_button index_button--title p-3">
-                    RESERVATOR
+                <div class="index_button text-primary p-3">
+                    <strong>RESERVATOR</strong>                    
                 </div>
             </div>
             <div class="col-8">
-                <div class="index_button index_button--secondary p-3">
+                <div class="index_button index_button--secondary text-light bg-warning  p-3">
                     Gérez et partagez vos salles
                 </div>
             </div>
         </div>
         <div class="row g-3 p-0 ">
             <div class="col-4 pt-3 pb-2">
-                <div class="index_button index_button--secondary p-3">
-                    <img src="{{ asset('images/calendar.png')}}" alt="calendar_image">
+                <div class="index_button index_button--secondary text-light bg-warning p-3 align-middle">
+                    <img class="m-auto" src="{{ asset('images/calendar.png')}}" alt="calendar_image">
                 </div>
             </div>
             <div class="col-8 p-0">
                 <div class="row g-3 p-3">
-                    <div class="index_button index_button--tertiary p-3">
+                    <div class="index_button bg-success text-light p-3">
                         Générez des calendriers personnalisés
                     </div>
                 </div>
                 <div class="row g-3 p-2">
                     <div class="col-6 mt-2">
-                        <div class="index_button index_button--primary p-2">
+                        <div class="index_button bg-success text-light p-2">
                             Planifiez vos réunions
                         </div>
                     </div>
                     <div class="col-6 mt-2">
-                        <div class="index_button index_button--secondary p-2">
-                            Lien github
+                        <div class="index_button text-light bg-warning index_button--secondary p-2">
+                            <a href="https://github.com/ln-brie/reservator" target="_blank">
+                                <img src="{{ asset('images/github.png')}}" id="logo_github" alt="github">
+                            </a>
                         </div>
                     </div>
                 </div>

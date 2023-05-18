@@ -52,11 +52,15 @@ final class UserFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        $roles = ['ROLE_USER'];
+        if (self::faker()->boolean()) {
+            $roles[] = 'ROLE_ADMIN';
+        }
         return [
             'alias' => self::faker()->word(),
             'email' => self::faker()->unique()->safeEmail(),
             'password' => '1234',
-            'roles' => ['USER_ROLE'],
+            'roles' => $roles
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\RoomRepository;
+use App\Entity\Calendar;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -133,12 +134,12 @@ class Room implements TimestampableInterface
     /**
      * @return Collection<int, Reservation>
      */
-    public function getStartAt(): Collection
+    public function getReservations(): Collection
     {
         return $this->reservations;
     }
 
-    public function addStartAt(Reservation $reservations): self
+    public function addReservation(Reservation $reservations): self
     {
         if (!$this->reservations->contains($reservations)) {
             $this->reservations->add($reservations);
@@ -148,7 +149,7 @@ class Room implements TimestampableInterface
         return $this;
     }
 
-    public function removeStartAt(Reservation $reservations): self
+    public function removeReservation(Reservation $reservations): self
     {
         if ($this->reservations->removeElement($reservations)) {
             // set the owning side to null (unless already changed)
@@ -197,5 +198,10 @@ class Room implements TimestampableInterface
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

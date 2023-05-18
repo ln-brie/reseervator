@@ -1,25 +1,33 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary mb-5">
-    <div class="container-fluid d-flex">
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-5" id="top_menu">
+    <div class="container d-flex">
         <a class="navbar-brand" href="{{ path('app_home') }}">
             <img src="{{ asset('images/logo.png')}}" alt="Logo" height="25" class="d-inline-block align-text-top">
-            RESERVATOR
+            <strong class="text-success">RESERVATOR</strong>
         </a>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {# <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li> #}
+                
             </ul>
             <span class="navbar-nav">
-                <div class="nav-item">
-                    <a class="nav-link" href=" {{ path('app_login')}} ">Login</a>
-                </div>            
+                {% if app.user %}
+                    <div class="dropdown">
+                        <a class="btn btn-success text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i> {{ app.user.alias }}
+                        </a>
+                    
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('app_user_dashboard') }}">Mon tableau de bord</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="nav-item d-flex g-3" >
+                        <a class=" nav-link bg-success rounded  text-light m-2" id="new-account-button" href=" {{ path('app_new_user_account')}} ">Créer un compte</a>
+                        <a class="nav-link bg-success rounded  text-light m-2" id="login-button" href=" {{ path('app_login')}} ">Connexion</a>
+                    </div> 
+                {% endif %}
+                
+                           
             </span>
         </div>
     </div>

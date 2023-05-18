@@ -13,13 +13,22 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        UserFactory::createMany(50);
-        RoomFactory::createMany(60, function() {
-            return [
-                'owner' => UserFactory::random()
-            ];
-        });
-        ReservationFactory::createMany(100, function() {
+        UserFactory::createMany(10);
+        
+        CalendarFactory::createMany(
+            15,
+            function() {
+                $user = UserFactory::random();
+                $room = RoomFactory::createOne(['owner' => $user]);
+                return [
+                    'user' => $user,
+                    'room' => [$room],
+                    'isNative' => true
+                ];
+            }
+        );
+
+        ReservationFactory::createMany(200, function() {
             $applicant = rand(1, 10) > 5 ? UserFactory::random() : null;
             
             return [
@@ -29,14 +38,15 @@ class AppFixtures extends Fixture
         });
 
         CalendarFactory::createMany(
-            60,
+            15,
             function() {
                 return [
                     'user' => UserFactory::random(),
-                    'room' => RoomFactory::randomRange(1,5)
+                    'room' => RoomFactory::randomRange(1,5),
                 ];
             }
         );
+        
 
         $manager->flush();
     }
