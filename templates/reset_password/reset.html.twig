@@ -1,12 +1,27 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Reset your password{% endblock %}
+{% extends "base.html.twig" %}
+{% block title %}Redéfinir le mot de passe{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+<div class="card bg-light p-5">
+	<h1 class="text-primary text-center">
+		<strong>
+            Redéfinir le mot de passe
+		</strong>
+	</h1>
 
-    {{ form_start(resetForm) }}
+	<div class="container">
+        {{ form_start(resetForm) }}
         {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+
+        <button class="btn btn-primary">Valider le nouveau mot de passe</button>
+        {{ form_end(resetForm) }}
+
+    </div>
+
+
+</div>
+
+    
+
+    
 {% endblock %}

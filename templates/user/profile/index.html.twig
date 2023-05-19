@@ -1,0 +1,38 @@
+{% extends "part/_user_dashboard_page.html.twig" %}
+{% block title %}Mon profil{% endblock %}
+{% block user_page_title %}Mon profil
+{% endblock %}
+
+{% block user_page_content %}
+	<div class="container">
+		<div class="col-7 mx-auto mt-5 mb-5">
+            <div class="mb-2">
+                <small>
+                    Compte créé le :
+                    {{ app.user.createdAt|date('d-m-Y') }}
+                </small>
+            </div>
+			<div class="alert alert-primary px-5">
+				Email :	{{ app.user.email }}
+			</div>
+			<div class="alert alert-primary px-5 d-flex justify-content-between">
+				Pseudo : {{ app.user.alias }}
+			</div>
+            <div class="alert alert-primary px-5 d-flex justify-content-between">
+                <span>{{ app.user.rooms|length == 1 ? app.user.rooms|length ~ ' salle' : app.user.rooms|length ~ ' salles' }} </span>
+                <span>{{ app.user.reservations|length == 1 ? app.user.reservations|length ~ ' reservation' : app.user.reservations|length ~ ' reservations' }} </span>
+                <span>{{ app.user.calendars|length == 1 ? app.user.calendars|length ~ ' calendrier' : app.user.calendars|length ~ ' calendriers' }} </span>                
+            </div>
+		</div>
+		<div class="container col-8 mx-auto my-2">
+			<a href="{{ path('app_reset_password_request', {'user': app.user.id }) }} ">
+				<button type="button" class="btn btn-primary mx-auto col-12">Redéfinir mon mot de passe</button>
+			</a>
+		</div>
+		<div class="container col-8 mx-auto my-2">
+			<a href="{{ path('app_delete_account_request', {'user': app.user.id }) }}">
+				<button type="button" class="btn btn-danger mx-auto col-12">Supprimer mon compte</button>
+			</a>
+		</div>
+	</div>
+{% endblock %}
