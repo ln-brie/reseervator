@@ -29,13 +29,10 @@ export default class extends Controller {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
-            
-            initialDate: '2023-01-01',
             navLinks: true, // can click day/week names to navigate views
             editable: true,
             dayMaxEvents: true, // allow "more" link when too many events
             events: this.eventsValue,
-            timeFormat: 'H(:mm)',
             themeSystem: 'bootstrap5',
             locale: 'fr',
             buttonText: {
