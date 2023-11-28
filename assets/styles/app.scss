@@ -11,8 +11,8 @@
 $primary: #264653;
 $secondary: #e9c46a;
 $success: #2a9d8f;
-$warning:#f4a261;
-$danger: #e76f51; 
+$warning: #f4a261;
+//$danger: #db480d;
 @import "~bootstrap/scss/bootstrap";
 
 body {
@@ -36,7 +36,7 @@ body {
 
 .index_button--secondary {
     height: 100%;
-} 
+}
 
 .index_button--secondary img {
     max-width: 80%;
@@ -46,6 +46,3 @@ body {
 #logo_github {
     max-width: 70px;
 }
-
-
-

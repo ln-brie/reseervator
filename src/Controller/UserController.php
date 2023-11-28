@@ -248,6 +248,10 @@ class UserController extends AbstractController
     {
         $entityManagerInterface->remove($reservation);
         $entityManagerInterface->flush();
+
+        $this->addFlash('success', $reservation->getName() . 'a bien été supprimée.');
+
+        return $this->redirectToRoute('app_user_reservations');
     }
 
     #[Route('/profile', name: 'app_user_profile')]

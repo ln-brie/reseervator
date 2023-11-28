@@ -6,56 +6,48 @@
 {% endblock %}
 {% block user_page_content %}
 
-	<div class="container mt-5">
-		<table class="table text-primary">
-			<thead>
-				<tr>
-					<th>Nom</th>
-					<th>Salle</th>
-					<th>Début</th>
-					<th>Fin</th>
-					<th>Commentaire</th>
-					<th colspan="2">Actions</th>
-				</tr>
-			</thead>
-			{% for reservation in reservations %}
-				<tr>
-					<td>
-						{{ reservation.name }}
-					</td>
-					<td>
-						{{ reservation.room }}
-					</td>
-					<td>
-						{{ reservation.startsAt|date('d-m-Y H:s') }}
-					</td>
-					<td>
-						{{ reservation.endsAt|date('d-m-Y H:s') }}
-					</td>
-					<td>
-						{{ reservation.comment }}
-					</td>
-					<td>
-						<a class="text-light" href="{{ path('app_user_update_reservation', {'id': reservation.id}) }}">
-							<i data-feather="edit-2"></i>
+<div class="container mt-5">
+	<table class="table text-primary">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Salle</th>
+				<th>Début</th>
+				<th>Fin</th>
+				<th>Commentaire</th>
+				<th colspan="2">Actions</th>
+			</tr>
+		</thead>
+		{% for reservation in reservations %}
+			<tr>
+				<td>
+					{{ reservation.name }}
+				</td>
+				<td>
+					{{ reservation.room }}
+				</td>
+				<td>
+					{{ reservation.startsAt|date('d-m-Y H:s') }}
+				</td>
+				<td>
+					{{ reservation.endsAt|date('d-m-Y H:s') }}
+				</td>
+				<td>
+					{{ reservation.comment }}
+				</td>
+				<td>
+					<a class="text-light" href="{{ path('app_user_update_reservation', {'id': reservation.id}) }}">
+						<i data-feather="edit-2"></i>
 
-						</a>
-					</td>
-					<td>
-						<i data-feather="trash-2"></i>
-					</td>
+					</a>
+				</td>
+				<td data-controller="deletereservation" data-deletereservation-url-value="{{ path('app_user_reservation_delete', {'id': reservation.id}) }}">
+					<a href="#" data-action="click->deletereservation#delete">
+						<i class="text-dark" data-feather="trash"></i>
+					</a>
+				</td>
+			</tr>
+		</a>
 
-				</tr>
-
-			{% endfor %}
-		</table>
-
-		<div class="my-4">
-			<a href="{{ path('app_user_new_reservation')}}">
-				<button class="btn btn-primary col-12">Nouvelle réservation</button>
-			</a>
-		</div>
-
-	</div>
-
-{% endblock %}
+	</td>
+</tr></td></tr>{% endfor %}</table><div class="my-4"><a href="{{ path('app_user_new_reservation')}}"><button class="btn btn-primary col-12">Nouvelle réservation</button></a></div></div>{% endblock %}
