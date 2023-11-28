@@ -10,12 +10,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Contract\Entity\TimestampableInterface;
 use Knp\DoctrineBehaviors\Model\Timestampable\TimestampableTrait;
+use App\Validator as Validator;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
+#[Validator\Room]
 class Room implements TimestampableInterface
 {
     use TimestampableTrait;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

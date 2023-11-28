@@ -46,7 +46,7 @@ final class ReservationFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
-        $start = \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween('-1 year', '+1 year'));
+        $start = self::faker()->dateTimeBetween('-1 year', '+1 year');
         $end = $start->modify('+'.rand(1,80).' hours');
         return [
             'approved' => self::faker()->boolean(),
