@@ -1,12 +1,13 @@
 {% extends "part/_user_dashboard_page.html.twig" %}
 
-{% block title %}Nouvelle réservation
+{% block title %}Modifier la réservation
 {% endblock %}
-{% block user_page_title %}Nouvelle réservation
+{% block user_page_title %}Modifier la réservation
 {% endblock %}
 
 {% block user_page_content %}
-	<div class="row col-12 d-flex justify-content-between my-5" data-controller="reservation" data-reservation-urlcheck-value="{{ path('app_user_new_reservation_check') }}">
+	<div class="row col-12 d-flex justify-content-between my-5" data-controller="reservation" data-reservation-urlcheck-value="{{ path('app_user_new_reservation_check', {update: true, reservation: reservation.id }) }}">
+
 
 		<div class="col-5">
 			{{ form_start(form, { 'attr' : {'id' : 'formulaire'}}) }}

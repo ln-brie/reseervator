@@ -40,39 +40,48 @@ class ReservationRepository extends ServiceEntityRepository
         }
     }
 
-    public function get_date_conflicts($room, $start, $end) {
-        return $this->createQueryBuilder('r')
-        ->andWhere('r.room = :room')
-        ->andWhere(':start BETWEEN r.startsAt AND r.endsAt OR r.startsAt BETWEEN :start AND :end')
-        ->setParameter('end', $end)
-        ->setParameter('start', $start)
-        ->setParameter('room', $room)
-        ->getQuery()
-        ->getResult();
+    public function get_date_conflicts($room, $start, $end, $update, $id)
+    {
+        $conflicts = $this->createQueryBuilder('r')
+            ->andWhere('r.room = :room');
+
+        if ($update && $id) {
+            $conflicts->andWhere('r.id != :id')
+                ->setParameter('id', $id);
+        }
+
+        $conflicts
+            ->andWhere(':start BETWEEN r.startsAt AND r.endsAt OR r.startsAt BETWEEN :start AND :end')
+            ->setParameter('end', $end)
+            ->setParameter('start', $start)
+            ->setParameter('room', $room);
+
+        return $conflicts->getQuery()
+            ->getResult();
     }
 
-//    /**
-//     * @return Reservation[] Returns an array of Reservation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Reservation[] Returns an array of Reservation objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('r.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Reservation
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Reservation
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

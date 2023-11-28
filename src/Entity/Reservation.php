@@ -12,7 +12,7 @@ use Knp\DoctrineBehaviors\Model\Timestampable\TimestampableTrait;
 class Reservation implements TimestampableInterface
 {
     use TimestampableTrait;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,10 +23,10 @@ class Reservation implements TimestampableInterface
     private ?Room $room = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $startsAt = null;
+    private ?\DateTime $startsAt = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $endsAt = null;
+    private ?\DateTime $endsAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
@@ -61,24 +61,24 @@ class Reservation implements TimestampableInterface
         return $this;
     }
 
-    public function getStartsAt(): ?\DateTimeImmutable
+    public function getStartsAt(): ?\DateTime
     {
         return $this->startsAt;
     }
 
-    public function setStartsAt(\DateTimeImmutable $startsAt): self
+    public function setStartsAt(\DateTime $startsAt): self
     {
         $this->startsAt = $startsAt;
 
         return $this;
     }
 
-    public function getEndsAt(): ?\DateTimeImmutable
+    public function getEndsAt(): ?\DateTime
     {
         return $this->endsAt;
     }
 
-    public function setEndsAt(\DateTimeImmutable $endsAt): self
+    public function setEndsAt(\DateTime $endsAt): self
     {
         $this->endsAt = $endsAt;
 

@@ -6,12 +6,11 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import  $ from 'jquery';
-import bootstrap from 'bootstrap';
+import $ from 'jquery';
 
 export default class extends Controller {
 
-    static values = { events: Array };
+    static values = { events: Array, urlcheck: String };
     static targets = ["cal", "room", "start", "end"];
 
     connect() {
@@ -22,6 +21,8 @@ export default class extends Controller {
 
     get_calendar() {
         let room = this.roomTarget.value;
+        let startDate = this.startTarget.value;
+        let initialDate = startDate.length > 0 ? new Date(startDate) : new Date();
 
         fetch('/calendar/ajax?id=' + room)
             .then(response => response.json())
@@ -48,7 +49,7 @@ export default class extends Controller {
                         $('#closeModal').on('click', () => {
                             $('#calendarModal').hide();
                         })
-                    }, 
+                    },
                     plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
                     headerToolbar: {
                         left: 'prev,next today',
@@ -56,12 +57,11 @@ export default class extends Controller {
                         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                     },
 
-                    initialDate: '2023-01-01',
+                    initialDate: initialDate,
                     navLinks: true, // can click day/week names to navigate views
                     editable: true,
                     dayMaxEvents: true, // allow "more" link when too many events
                     events: reservations,
-                    timeFormat: 'H(:mm)',
                     themeSystem: 'bootstrap5',
                     locale: 'fr',
                     buttonText: {
@@ -92,7 +92,7 @@ export default class extends Controller {
 
         if (start !== '' || end !== '' || room !== null) {
 
-            let url = '/dashboard/reservation/ajax-check?room=' + room + '&start=' + start + '&end=' + end;
+            let url = this.urlcheckValue + '?room=' + room + '&start=' + start + '&end=' + end;
 
             fetch(url)
                 .then(response => response.json())
@@ -101,6 +101,7 @@ export default class extends Controller {
                         message.classList.add('text-bg-warning');
                         button.setAttribute('disabled', true);
                         message.innerHTML = "Le créneau demandé n'est pas disponible.";
+                        message.classList.remove('d-none');
                     } else {
                         button.removeAttribute('disabled');
                     }

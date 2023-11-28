@@ -1,34 +1,37 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-5" id="top_menu">
-    <div class="container d-flex">
-        <a class="navbar-brand" href="{{ path('app_home') }}">
-            <img src="{{ asset('images/logo.png')}}" alt="Logo" height="25" class="d-inline-block align-text-top">
-            <strong class="text-success">RESERVATOR</strong>
-        </a>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                
-            </ul>
-            <span class="navbar-nav">
-                {% if app.user %}
-                    <div class="dropdown">
-                        <a class="btn btn-success text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-user"></i> {{ app.user.alias }}
-                        </a>
-                    
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ path('app_user_dashboard') }}">Mon tableau de bord</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
-                        </ul>
-                    </div>
-                {% else %}
-                    <div class="nav-item d-flex g-3" >
-                        <a class=" nav-link bg-success rounded  text-light m-2" id="new-account-button" href=" {{ path('app_new_user_account')}} ">Créer un compte</a>
-                        <a class="nav-link bg-success rounded  text-light m-2" id="login-button" href=" {{ path('app_login')}} ">Connexion</a>
-                    </div> 
-                {% endif %}
-                
-                           
-            </span>
-        </div>
-    </div>
+	<div class="container d-flex">
+		<a class="navbar-brand" href="{{ path('app_home') }}">
+			<img src="{{ asset('images/logo.png')}}" alt="Logo" height="25" class="d-inline-block align-text-top">
+			<strong class="text-success">RESERVATOR</strong>
+		</a>
+		<div class="collapse navbar-collapse" id="navbarText">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+			<span class="navbar-nav">
+				{% if app.user %}
+					<div class="dropdown">
+						<a class="btn btn-success text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i data-feather="user"></i>
+							{{ app.user.alias }}
+						</a>
+
+						<ul class="dropdown-menu">
+							<li>
+								<a class="dropdown-item" href="{{ path('app_user_dashboard') }}">Mon tableau de bord</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+							</li>
+						</ul>
+					</div>
+				{% else %}
+					<div class="nav-item d-flex g-3">
+						<a class=" nav-link bg-success rounded  text-light m-2" id="new-account-button" href=" {{ path('app_new_user_account')}} ">Créer un compte</a>
+						<a class="nav-link bg-success rounded  text-light m-2" id="login-button" href=" {{ path('app_login')}} ">Connexion</a>
+					</div>
+				{% endif %}
+
+
+			</span>
+		</div>
+	</div>
 </nav>

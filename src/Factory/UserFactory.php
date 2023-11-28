@@ -57,7 +57,7 @@ final class UserFactory extends ModelFactory
             $roles[] = 'ROLE_ADMIN';
         }
         return [
-            'alias' => self::faker()->word(),
+            'alias' => self::faker()->userName(),
             'email' => self::faker()->unique()->safeEmail(),
             'password' => '1234',
             'roles' => $roles
