@@ -41,8 +41,8 @@
 
 					</a>
 				</td>
-				<td data-controller="deletereservation" data-deletereservation-url-value="{{ path('app_user_reservation_delete', {'id': reservation.id}) }}">
-					<a href="#" data-action="click->deletereservation#delete">
+				<td data-controller="deleteitem" data-deleteitem-url-value="{{ path('app_user_reservation_delete', {'id': reservation.id}) }}">
+					<a href="#" data-action="click->deleteitem#delete" data-deleteitem-label-value="cette réservation">
 						<i class="text-dark" data-feather="trash"></i>
 					</a>
 				</td>
