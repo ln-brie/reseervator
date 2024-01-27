@@ -1,0 +1,54 @@
+{% extends "part/_user_dashboard_page_cards.html.twig" %}
+{% block title %}Liste des calendriers
+{% endblock %}
+
+{% block user_page_title %}Mes calendriers
+{% endblock %}
+{% block user_cards %}
+
+	{% for calendar in calendars %}
+		<div class="p-1 col-4">
+
+			<div class="card bg-white">
+				<div class="card-body">
+					<h4 class="mb-3 card-title">
+						{{ calendar.name|upper }}
+					</h4>
+
+					<p>
+						Affichage pour :
+						<ul>
+							{% for room in calendar.room %}
+								<li>{{ room }}</li>
+							{% endfor %}
+						</ul>
+					</p>
+					<div class="row">
+						<div class="d-flex mx-auto col-6 justify-content-around">
+							<a class="btn btn-primary text-decoration-none" href="{{ path('app_calendar_view', {'id': calendar.id}) }}">
+								<i data-feather="eye"></i>
+							</a>
+
+							<a class="btn btn-secondary text-decoration-none" href="{{ path('app_user_calendar_details', {'id': calendar.id}) }}">
+								<i data-feather="edit"></i>
+							</a>
+							{% if calendar.native == false %}
+								<a class="btn btn-danger text-decoration-none" data-controller="deleteitem" data-deleteitem-url-value="{{ path('app_user_calendar_delete', {'id': calendar.id}) }}" data-action="click->deleteitem#delete" data-deleteitem-label-value="ce calendrier">
+									<i data-feather="trash-2"></i>
+								</a>
+							{% endif %}
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+
+{% endblock %}
+{% block user_cards_buttons %}
+	<a href="{{ path('app_user_new_calendar') }}" class="btn btn-primary col-6 mx-auto">
+		<strong>Créer un nouveau calendrier</strong>
+	</a>
+{% endblock %}

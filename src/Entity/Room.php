@@ -48,7 +48,7 @@ class Room implements TimestampableInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    #[ORM\ManyToMany(targetEntity: Calendar::class, mappedBy: 'room')]
+    #[ORM\ManyToMany(targetEntity: Calendar::class, mappedBy: 'room', cascade: ['remove'])]
     private Collection $calendars;
 
     public function __construct()
