@@ -3,7 +3,7 @@
 {% block title %}Nouveau calendrier{% endblock %}
 
 {% block user_page_content %}
-{% if calendar and calendar.native == true %}
+{% if calendar is defined and calendar.native == true %}
 	<p>Ce calendrier est lié à la salle {{ calendar.room[0] }} et ne peut être supprimé ou lié à d'autres calendriers.</p>
 {% endif %}
 
