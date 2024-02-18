@@ -10,18 +10,27 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default class extends Controller {
 
-    static values = { events: Array};
-    static targets = ["cal"];
+    static values = { events: Array };
 
     connect() {
 
         let cal = document.getElementById('calendar');
         let calendar = new Calendar(cal, {
             eventClick: function (info) {
-                alert('Event: ' + info.event.title);
-                
-                // change the border color just for fun
-                info.el.style.borderColor = 'red';
+                info.jsEvent.preventDefault();
+                let title = document.getElementById('modalTitle');
+                let start = document.getElementById('modalStart');
+                let end = document.getElementById('modalEnd');
+
+                title.textContent = info.event.title;
+                start.textContent = getEventDate(info.event.start);
+                end.textContent = getEventDate(info.event.end);
+
+                info.el.click();
+            },
+            eventDidMount: function (data) {
+                data.el.setAttribute("data-bs-toggle", "modal");
+                data.el.setAttribute("data-bs-target", "#calendarModal");
             },
             plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
             headerToolbar: {
@@ -42,8 +51,19 @@ export default class extends Controller {
                 day: 'jour',
                 list: 'liste'
             }
-            
+
         });
+
+        function getEventDate(date) {
+            let months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            let minutes = date.getMinutes();
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+            let stringDate = date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + ' ' + date.getHours() + ':' + minutes;
+
+            return stringDate;
+        }
 
         calendar.render();
     }

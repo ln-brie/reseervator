@@ -25,6 +25,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -261,12 +262,48 @@ class UserController extends AbstractController
     public function user_calendars(UserRepository $userRepository)
     {
         $user = $userRepository->find($this->getUser());
-        if ($user) {
-            $calendars = $user->getCalendars();
-            return $this->render('/user/calendars/list.html.twig', [
-                'calendars' => $calendars
-            ]);
+        $calendars = $user->getCalendars();
+        $urls = [];
+        foreach ($calendars as $calendar) {
+            $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['base_user' => base64_encode($user->getId()), 'slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
         }
+        return $this->render('/user/calendars/list.html.twig', [
+            'calendars' => $calendars,
+            'urls' => $urls
+        ]);
+    }
+
+    #[Route('/calendar/{id}', name: 'app_calendar_view')]
+    public function calendar_view(Calendar $calendar, UserRepository $userRepository)
+    {
+        $user = $userRepository->find($this->getUser());
+        $editable = $user == $calendar->getUser();
+        $reservations = [];
+        $rooms = [];
+        $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['base_user' => base64_encode($user->getId()), 'slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        foreach ($calendar->getRoom() as $room) {
+            $rooms[] = $room;
+            foreach ($room->getReservations() as $reservation) {
+                $reservations[] = array(
+                    'id' => $reservation->getId(),
+                    'title' => $reservation->getName(),
+                    'start' => date_format($reservation->getStartsAt(), 'Y-m-d H:i'),
+                    'end' => date_format($reservation->getEndsAt(), 'Y-m-d H:i'),
+                    'backgroundColor' => $room->getColor(),
+                    'comment' => $reservation->getComment(),
+                    'room' => $room->getName()
+                );
+            }
+        }
+
+        return $this->render('calendar/view.html.twig', [
+            'reservations' => json_encode($reservations),
+            'calendar' => $calendar,
+            'rooms' => $rooms,
+            'editable' => $editable,
+            'urls' => $urls
+        ]);
     }
 
     #[Route('/calendars/new', name: 'app_user_new_calendar')]

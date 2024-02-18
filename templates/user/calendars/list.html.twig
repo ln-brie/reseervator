@@ -15,6 +15,7 @@
 						{{ calendar.name|upper }}
 					</h4>
 
+
 					<p>
 						Affichage pour :
 						<ul>
@@ -24,9 +25,15 @@
 						</ul>
 					</p>
 					<div class="row">
-						<div class="d-flex mx-auto col-6 justify-content-around">
+						<div class="d-flex mx-auto col-8 justify-content-around">
 							<a class="btn btn-primary text-decoration-none" href="{{ path('app_calendar_view', {'id': calendar.id}) }}">
+
 								<i data-feather="eye"></i>
+							</a>
+							<a class="btn btn-primary text-decoration-none fs-6" href="#" data-controller="publiclink" data-publiclink-link-value="{{ urls[calendar.id] }}" data-action="publiclink#copyToClipboard">
+
+
+								<i data-feather="link"></i>
 							</a>
 
 							<a class="btn btn-secondary text-decoration-none" href="{{ path('app_user_calendar_details', {'id': calendar.id}) }}">
@@ -37,6 +44,8 @@
 									<i data-feather="trash-2"></i>
 								</a>
 							{% endif %}
+
+
 						</div>
 
 					</div>
@@ -44,8 +53,6 @@
 			</div>
 		</div>
 	{% endfor %}
-
-
 {% endblock %}
 {% block user_cards_buttons %}
 	<a href="{{ path('app_user_new_calendar') }}" class="btn btn-primary col-6 mx-auto">

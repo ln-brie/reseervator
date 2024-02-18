@@ -24,12 +24,15 @@ class CalendarController extends AbstractController
         ]);
     }
 
-    #[Route('/view/{id}', name: 'app_calendar_view')]
-    public function calendar_view(
-        Calendar $calendar
-
+    #[Route('/{base_user}/{slug}', name: 'app_public_calendar_view')]
+    public function public_calendar_view(
+        CalendarRepository $calendarRepository,
+        string $base_user, // id user
+        string $slug // slug calendrier
     ): Response
     {
+        $calendarOwner = base64_decode($base_user);
+        $calendar = $calendarRepository->findOneBy(['user' => $calendarOwner, 'slug' => $slug]);
         $reservations = [];
         $rooms = [];
         foreach ($calendar->getRoom() as $room) {
@@ -44,7 +47,6 @@ class CalendarController extends AbstractController
                     'comment' => $reservation->getComment(),
                     'room' => $room->getName()
                 );
-
             }
         }
 
