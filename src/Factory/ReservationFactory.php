@@ -54,6 +54,7 @@ final class ReservationFactory extends ModelFactory
             'name' => self::faker()->words(5, true),
             'startsAt' => $start,
             'applicantName' => self::faker()->name(),
+            'applicantEmail' => self::faker()->safeEmail(),
             'comment' => self::faker()->text(100),
         ];
     }
@@ -67,6 +68,7 @@ final class ReservationFactory extends ModelFactory
             ->afterInstantiate(function(Reservation $reservation): void {
                 if($reservation->getApplicant() != null) {
                     $reservation->setApplicantName($reservation->getApplicant()->getAlias());
+                    $reservation->setApplicantEmail($reservation->getApplicant()->getEmail());
                 }
             })
         ;

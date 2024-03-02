@@ -39,8 +39,7 @@ final class CalendarFactory extends ModelFactory
      */
     public function __construct(
         private SluggerInterface $sluggerInterface
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -55,7 +54,7 @@ final class CalendarFactory extends ModelFactory
         return [
             'name' => $name,
             'isNative' => self::faker()->boolean(),
-            'slug' => $this->sluggerInterface->slug($name)
+            'slug' => $this->sluggerInterface->slug(uniqid() . '-' . $name)
         ];
     }
 
