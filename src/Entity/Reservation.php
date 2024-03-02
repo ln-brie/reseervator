@@ -44,6 +44,9 @@ class Reservation implements TimestampableInterface
     #[ORM\Column(length: 255)]
     private ?string $applicantName = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $applicantEmail = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -141,6 +144,18 @@ class Reservation implements TimestampableInterface
     public function setApplicantName(string $applicantName): self
     {
         $this->applicantName = $applicantName;
+
+        return $this;
+    }
+
+    public function getApplicantEmail(): ?string
+    {
+        return $this->applicantEmail;
+    }
+
+    public function setApplicantEmail(string $applicantEmail): static
+    {
+        $this->applicantEmail = $applicantEmail;
 
         return $this;
     }

@@ -54,6 +54,7 @@ final class RoomFactory extends ModelFactory
             'comment' => rand(1, 10) > 2 ? self::faker()->text(100) : null,
             'address' => rand(1, 10) > 2 ? self::faker()->address() : null,
             'registeredReservationsOnly' => self::faker()->boolean(),
+            'preapprovedReservations' => self::faker()->boolean(),
         ];
     }
 

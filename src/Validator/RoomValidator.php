@@ -24,7 +24,7 @@ class RoomValidator extends ConstraintValidator
             return;
         }
 
-        if (count($this->roomRepository->getSameName($value->getName())) != 0) {
+        if (count($this->roomRepository->getSameName($value->getName(), $value->getId())) != 0) {
 
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)

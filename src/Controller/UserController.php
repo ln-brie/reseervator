@@ -13,6 +13,7 @@ use App\Repository\CalendarRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,6 +26,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -46,7 +48,7 @@ class UserController extends AbstractController
     public function user_rooms(
         RoomRepository $roomRepository
     ): Response {
-        $rooms = $roomRepository->findByOwner($this->getUser(), ['createdAt' => 'DESC']);
+        $rooms = $roomRepository->findByOwner($this->getUser(), ['name' => 'ASC']);
         return $this->render('user/rooms/list.html.twig', [
             'rooms' => $rooms
         ]);
@@ -97,7 +99,8 @@ class UserController extends AbstractController
             $calendar->setIsNative(true)
                 ->addRoom($newRoom)
                 ->setUser($user)
-                ->setName($newRoom->getName());
+                ->setName($newRoom->getName())
+                ->setSlug($sluggerInterface->slug($calendar->getName()));
             $entityManagerInterface->persist($calendar);
 
             $entityManagerInterface->flush();
@@ -182,7 +185,7 @@ class UserController extends AbstractController
 
 
         return $this->render('/user/reservations/new.html.twig', [
-            'form' => $form->createView()
+            'form' => $form
         ]);
     }
 
@@ -217,33 +220,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/reservation/ajax-check', name: 'app_user_new_reservation_check')]
-    public function new_reservation_check(
-        Request $request,
-        RoomRepository $roomRepository,
-        ReservationRepository $reservationRepository,
-        $update = false,
-        $reservation = null
-    ): JsonResponse {
-
-        $validation = true;
-
-        $room = $request->query->get('room');
-        $start = $request->query->get('start');
-        $end = $request->query->get('end');
-
-        $reservations = $reservationRepository->get_date_conflicts($room, $start, $end, $update, $reservation);
-
-        //dd($room, $start, $end);
-        if (count($reservations) > 0) {
-            $validation = false;
-        }
-
-        return new JsonResponse(
-            ['validation' => $validation]
-        );
-    }
-
     #[Route('/reservation/delete/{id}', name: 'app_user_reservation_delete')]
     public function reservation_delete(Reservation $reservation, EntityManagerInterface $entityManagerInterface)
     {
@@ -253,6 +229,160 @@ class UserController extends AbstractController
         $this->addFlash('success', $reservation->getName() . ' a bien été supprimée.');
 
         return $this->redirectToRoute('app_user_reservations');
+    }
+
+    #[Route('/ajax/approve-reservation/{id}', name: 'app_user_approve_reservation')]
+    public function approve_reservation(Reservation $reservation, UserRepository $userRepository, MailService $mailService, EntityManagerInterface $entityManagerInterface) {
+        $user = $userRepository->find($this->getUser());
+        if ($user == $reservation->getRoom()->getOwner()) {
+            $reservation->setApproved(true);
+            $entityManagerInterface->flush();
+            $mailService->reservation_approved($reservation);
+        }
+
+        return new JsonResponse(['approved' => $reservation->isApproved()]);
+    }
+
+
+    #[Route('/calendars', name: 'app_user_calendars')]
+    public function user_calendars(UserRepository $userRepository)
+    {
+        $user = $userRepository->find($this->getUser());
+        $calendars = $user->getCalendars();
+        $urls = [];
+        foreach ($calendars as $calendar) {
+            $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+        }
+        return $this->render('/user/calendars/list.html.twig', [
+            'calendars' => $calendars,
+            'urls' => $urls
+        ]);
+    }
+
+    #[Route('/calendar/{id}', name: 'app_calendar_view')]
+    public function calendar_view(Calendar $calendar, UserRepository $userRepository)
+    {
+        $user = $userRepository->find($this->getUser());
+        $editable = $user == $calendar->getUser();
+        $reservations = [];
+        $rooms = [];
+        $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        foreach ($calendar->getRoom() as $room) {
+            $rooms[] = $room;
+            foreach ($room->getReservations() as $reservation) {
+                $reservations[] = array(
+                    'id' => $reservation->getId(),
+                    'title' => $reservation->getName(),
+                    'start' => date_format($reservation->getStartsAt(), 'Y-m-d H:i'),
+                    'end' => date_format($reservation->getEndsAt(), 'Y-m-d H:i'),
+                    'backgroundColor' => $room->getColor(),
+                    'comment' => $reservation->getComment(),
+                    'room' => $room->getName()
+                );
+            }
+        }
+
+        return $this->render('calendar/view.html.twig', [
+            'reservations' => json_encode($reservations),
+            'calendar' => $calendar,
+            'rooms' => $rooms,
+            'editable' => $editable,
+            'urls' => $urls,
+            'reservation_button' => true
+        ]);
+    }
+
+    #[Route('/calendars/new', name: 'app_user_new_calendar')]
+    public function user_new_calendars(UserRepository $userRepository, Request $request, EntityManagerInterface $entityManagerInterface, SluggerInterface $sluggerInterface)
+    {
+        $calendar = new Calendar;
+        $calendar->setUser($this->getUser())
+            ->setSlug('tmp')
+            ->setIsNative(false);
+
+        $user = $userRepository->find($this->getUser());
+        $rooms = [];
+        foreach ($user->getRooms() as $room) {
+            $rooms[] = $room;
+        }
+
+        $form = $this->createForm(CalendarFormType::class, $calendar, ['rooms' => $rooms])
+            ->add('Valider', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary col-12 mt-3'
+                ]
+            ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $calendar->setSlug($sluggerInterface->slug(uniqid() . '-' . $calendar->getName()));
+            $entityManagerInterface->persist($calendar);
+            $entityManagerInterface->flush();
+
+            return $this->redirectToRoute('app_user_calendars');
+        }
+
+        return $this->render('user/calendars/new.html.twig', [
+            'form' => $form
+        ]);
+    }
+
+    #[Route('/calendar/edit/{id}', name: 'app_user_calendar_details')]
+    public function user_calendar_details(Calendar $calendar, UserRepository $userRepository, Request $request, EntityManagerInterface $entityManagerInterface)
+    {
+        $user = $userRepository->find($this->getUser());
+        $rooms = [];
+        foreach ($user->getRooms() as $room) {
+            $rooms[] = $room;
+        }
+
+        $form = $this->createForm(CalendarFormType::class, $calendar, ['rooms' => $rooms])
+            ->add('Valider', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary col-12 mt-3'
+                ]
+            ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManagerInterface->flush();
+
+            return $this->redirectToRoute('app_user_calendars');
+        }
+
+        return $this->render('user/calendars/new.html.twig', [
+            'form' => $form,
+            'calendar' => $calendar
+        ]);
+    }
+
+    #[Route('/calendar/delete/{id}', name: 'app_user_calendar_delete')]
+    public function user_calendar_delete(Calendar $calendar, EntityManagerInterface $entityManagerInterface, UserRepository $userRepository)
+    {
+        $message = "";
+        $statut = "";
+        $name = $calendar->getName();
+        $user = $userRepository->find($this->getUser());
+
+        if ($user == $calendar->getUser() && !$calendar->isNative()) {
+            $entityManagerInterface->remove($calendar);
+            $entityManagerInterface->flush();
+            $message = "Le calendrier <strong>" . $name . "</strong> a bien été supprimé.";
+            $statut = "success";
+        } elseif ($user != $calendar->getUser()) {
+            $message = "Vous n'êtes pas propriétaire du calendrier " . $name . " , vous ne pouvez donc pas le supprimer.";
+            $statut = "error";
+        } else {
+            $message = "Vous ne pouvez pas supprimer le calendrier " . $name . ".";
+            $statut = "error";
+        }
+
+        $this->addFlash($statut, $message);
+
+        return $this->redirectToRoute('app_user_calendars');
     }
 
     #[Route('/profile', name: 'app_user_profile')]
@@ -336,108 +466,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route('/calendars', name: 'app_user_calendars')]
-    public function user_calendars(UserRepository $userRepository)
-    {
-        $user = $userRepository->find($this->getUser());
-        if ($user) {
-            $calendars = $user->getCalendars();
-            return $this->render('/user/calendars/list.html.twig', [
-                'calendars' => $calendars
-            ]);
-        }
-    }
-
-    #[Route('/calendars/new', name: 'app_user_new_calendar')]
-    public function user_new_calendars(UserRepository $userRepository, Request $request, EntityManagerInterface $entityManagerInterface)
-    {
-        $calendar = new Calendar;
-        $calendar->setUser($this->getUser())
-            ->setIsNative(false);
-
-        $user = $userRepository->find($this->getUser());
-        $rooms = [];
-        foreach ($user->getRooms() as $room) {
-            $rooms[] = $room;
-        }
-
-        $form = $this->createForm(CalendarFormType::class, $calendar, ['rooms' => $rooms])
-            ->add('Valider', SubmitType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary col-12 mt-3'
-                ]
-            ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $entityManagerInterface->persist($calendar);
-            $entityManagerInterface->flush();
-
-            return $this->redirectToRoute('app_user_calendars');
-        }
-
-        return $this->render('user/calendars/new.html.twig', [
-            'form' => $form
-        ]);
-    }
-
-    #[Route('/calendar/edit/{id}', name: 'app_user_calendar_details')]
-    public function user_calendar_details(Calendar $calendar, UserRepository $userRepository, Request $request, EntityManagerInterface $entityManagerInterface)
-    {
-        $user = $userRepository->find($this->getUser());
-        $rooms = [];
-        foreach ($user->getRooms() as $room) {
-            $rooms[] = $room;
-        }
-
-        $form = $this->createForm(CalendarFormType::class, $calendar, ['rooms' => $rooms])
-            ->add('Valider', SubmitType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary col-12 mt-3'
-                ]
-            ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManagerInterface->flush();
-
-            return $this->redirectToRoute('app_user_calendars');
-        }
-
-        return $this->render('user/calendars/new.html.twig', [
-            'form' => $form,
-            'calendar' => $calendar
-        ]);
-    }
-
-    #[Route('/calendar/delete/{id}', name: 'app_user_calendar_delete')]
-    public function user_calendar_delete(Calendar $calendar, EntityManagerInterface $entityManagerInterface, UserRepository $userRepository)
-    {
-        $message = "";
-        $statut = "";
-        $name = $calendar->getName();
-        $user = $userRepository->find($this->getUser());
-
-        if ($user == $calendar->getUser() && !$calendar->isNative()) {
-            $entityManagerInterface->remove($calendar);
-            $entityManagerInterface->flush();
-            $message = "Le calendrier <strong>" . $name . "</strong> a bien été supprimé.";
-            $statut = "success";
-        } elseif ($user != $calendar->getUser()) {
-            $message = "Vous n'êtes pas propriétaire du calendrier " . $name . " , vous ne pouvez donc pas le supprimer.";
-            $statut = "error";
-        } else {
-            $message = "Vous ne pouvez pas supprimer le calendrier " . $name . ".";
-            $statut = "error";
-        }
-
-        $this->addFlash($statut, $message);
-
-        return $this->redirectToRoute('app_user_calendars');
-    }
 
     #[Route('/_reset-password/{user}', name: 'app_reset_password_request')]
     public function reset_password(

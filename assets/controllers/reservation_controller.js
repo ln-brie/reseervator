@@ -3,10 +3,10 @@ import { Calendar } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import $ from 'jquery';
 
 export default class extends Controller {
 
@@ -27,7 +27,6 @@ export default class extends Controller {
         fetch('/calendar/ajax?id=' + room)
             .then(response => response.json())
             .then(data => {
-
                 let reservations = [];
                 data.reservations.forEach(element => {
                     reservations.push(element);
@@ -37,20 +36,22 @@ export default class extends Controller {
                 let cal = document.getElementById('room-calendar');
                 let calendar = new Calendar(cal, {
                     eventClick: function (info) {
-                        let start = new Date(info.event.start);
-                        start = start.toLocaleString();
-                        let end = new Date(info.event.end);
-                        end = end.toLocaleString();
-                        $('#staticBackdropLabel').html(info.event.title);
-                        $('#modalBody').html(info.event.description);
-                        $('#modalStart').html(start);
-                        $('#modalEnd').html(end);
-                        $('#calendarModal').show();
-                        $('#closeModal').on('click', () => {
-                            $('#calendarModal').hide();
-                        })
+                        info.jsEvent.preventDefault();
+                        let title = document.getElementById('modalTitle');
+                        let start = document.getElementById('modalStart');
+                        let end = document.getElementById('modalEnd');
+
+                        title.textContent = info.event.title;
+                        start.textContent = getEventDate(info.event.start);
+                        end.textContent = getEventDate(info.event.end);
+
+                        info.el.click();
                     },
-                    plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
+                    eventDidMount: function (data) {
+                        data.el.setAttribute("data-bs-toggle", "modal");
+                        data.el.setAttribute("data-bs-target", "#calendarModal");
+                    },
+                    plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin, bootstrap5Plugin],
                     headerToolbar: {
                         left: 'prev,next today',
                         center: 'title',
@@ -74,12 +75,22 @@ export default class extends Controller {
 
                 });
 
+                function getEventDate(date) {
+                    let months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+                    let minutes = date.getMinutes();
+                    if (minutes < 10) {
+                        minutes = '0' + minutes;
+                    }
+                    let stringDate = date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear() + ' ' + date.getHours() + ':' + minutes;
+
+                    return stringDate;
+                }
+
                 calendar.render();
             });
     }
 
     check() {
-        //TO-DO lors de l'update, exclure la réservation en cours d'update des blocages
         let room = this.roomTarget.value;
         let start = this.startTarget.value;
         let end = this.endTarget.value;

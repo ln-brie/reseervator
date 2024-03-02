@@ -6,15 +6,27 @@
 {% endblock %}
 
 {% block user_page_content %}
-	<div class="row col-12 d-flex justify-content-between my-5" data-controller="reservation" data-reservation-urlcheck-value="{{ path('app_user_new_reservation_check') }}">
+<div class="row col-12 d-flex justify-content-between my-5" data-controller="reservation" data-reservation-urlcheck-value="{{ path('reservation_new_reservation_check') }}">
+
 
 		<div class="col-5">
 			{{ form_start(form, { 'attr' : {'id' : 'formulaire'}}) }}
+			{% if form.applicantName is defined %}
+				{{ form_row(form.applicantName) }}
+			{% endif %}
+			{% if form.applicantEmail is defined %}
+				{{ form_row(form.applicantEmail) }}
+			{% endif %}
 
 			{{ form_label(form.room) }}
 			{{ form_widget(form.room, { 'attr' : {'data-reservation-target' : 'room', 'data-action' : 'change->reservation#check change->reservation#get_calendar'}}) }}
-			{{ form_row(form.name) }}
-			{{ form_row(form.comment) }}
+			
+			{{ form_label(form.name) }}
+			{{ form_widget(form.name) }}
+			
+			{{ form_label(form.comment) }}
+			{{ form_widget(form.comment) }}
+			
 			{{ form_label(form.startsAt) }}
 			{{ form_widget(form.startsAt, { 'attr' : {'data-reservation-target' : 'start', 'data-action' : 'change->reservation#check'}})}}
 			{{ form_label(form.endsAt) }}

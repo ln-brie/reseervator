@@ -43,6 +43,16 @@ class RoomFormType extends AbstractType
                 'multiple'  => false,
                 'data' => false
             ])
+            ->add('preapprovedReservations', ChoiceType::class, [
+                'label' => 'Les nouvelles réservations sont automatiquement approuvées',
+                'choices' => array(
+                    'Oui' => true,
+                    'Non' => false
+                ),
+                'expanded'  => true,
+                'multiple'  => false,
+                'data' => false
+            ])
         ;
     }
 

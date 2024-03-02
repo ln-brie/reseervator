@@ -1,20 +1,26 @@
-<div class="modal" id="calendarModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <p>Début : <span id="modalStart"></span> <br>Fin : <span id="modalEnd"></span></p>
-                    </div>
-                    <p id="modalBody"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="closeModal" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="modal fade" data-calendar-target="modal" id="calendarModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="modalTitle"></h1>
+
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div>
+					<p>Début :
+						<span id="modalStart"></span>
+					</p>
+					<p>Fin :
+						<span id="modalEnd"></span>
+					</p>
+				</div>
+				<p id="modalBody"></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="closeModal" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
+</div>

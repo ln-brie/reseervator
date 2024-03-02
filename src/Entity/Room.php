@@ -51,6 +51,9 @@ class Room implements TimestampableInterface
     #[ORM\ManyToMany(targetEntity: Calendar::class, mappedBy: 'room', cascade: ['remove'])]
     private Collection $calendars;
 
+    #[ORM\Column]
+    private ?bool $preapprovedReservations = null;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -205,5 +208,17 @@ class Room implements TimestampableInterface
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function isPreapprovedReservations(): ?bool
+    {
+        return $this->preapprovedReservations;
+    }
+
+    public function setPreapprovedReservations(bool $preapprovedReservations): static
+    {
+        $this->preapprovedReservations = $preapprovedReservations;
+
+        return $this;
     }
 }

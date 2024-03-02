@@ -5,6 +5,8 @@ namespace App\Factory;
 use App\Entity\Calendar;
 use App\Factory\UserFactory;
 use App\Repository\CalendarRepository;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Zenstruck\Foundry\Factory;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -35,8 +37,9 @@ final class CalendarFactory extends ModelFactory
      *
      * @todo inject services if required
      */
-    public function __construct()
-    {
+    public function __construct(
+        private SluggerInterface $sluggerInterface
+    ) {
         parent::__construct();
     }
 
@@ -47,9 +50,11 @@ final class CalendarFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        $name = self::faker()->words(2, true);
         return [
-            'name' => self::faker()->words(2, true),
-            'isNative' => self::faker()->boolean()
+            'name' => $name,
+            'isNative' => self::faker()->boolean(),
+            'slug' => $this->sluggerInterface->slug(uniqid() . '-' . $name)
         ];
     }
 
@@ -59,7 +64,11 @@ final class CalendarFactory extends ModelFactory
     protected function initialize(): self
     {
         return $this
-            // ->afterInstantiate(function(Calendar $calendar): void {})
+            // ->afterInstantiate(function(Calendar $calendar): void {
+            // })
+            // ->afterPersist(function(Calendar $calendar) {
+            //     $calendar->setSlug(base64_encode($calendar->getId()) . '-' . $this->sluggerInterface->slug($calendar->getName()));
+            // })
         ;
     }
 
