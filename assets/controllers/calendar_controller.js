@@ -17,6 +17,7 @@ export default class extends Controller {
         let cal = document.getElementById('calendar');
         let calendar = new Calendar(cal, {
             eventClick: function (info) {
+                
                 info.jsEvent.preventDefault();
                 let title = document.getElementById('modalTitle');
                 let start = document.getElementById('modalStart');

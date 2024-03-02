@@ -13,6 +13,7 @@ use App\Repository\CalendarRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+use App\Service\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -184,7 +185,7 @@ class UserController extends AbstractController
 
 
         return $this->render('/user/reservations/new.html.twig', [
-            'form' => $form->createView()
+            'form' => $form
         ]);
     }
 
@@ -219,33 +220,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/reservation/ajax-check', name: 'app_user_new_reservation_check')]
-    public function new_reservation_check(
-        Request $request,
-        RoomRepository $roomRepository,
-        ReservationRepository $reservationRepository,
-        $update = false,
-        $reservation = null
-    ): JsonResponse {
-
-        $validation = true;
-
-        $room = $request->query->get('room');
-        $start = $request->query->get('start');
-        $end = $request->query->get('end');
-
-        $reservations = $reservationRepository->get_date_conflicts($room, $start, $end, $update, $reservation);
-
-        //dd($room, $start, $end);
-        if (count($reservations) > 0) {
-            $validation = false;
-        }
-
-        return new JsonResponse(
-            ['validation' => $validation]
-        );
-    }
-
     #[Route('/reservation/delete/{id}', name: 'app_user_reservation_delete')]
     public function reservation_delete(Reservation $reservation, EntityManagerInterface $entityManagerInterface)
     {
@@ -257,6 +231,18 @@ class UserController extends AbstractController
         return $this->redirectToRoute('app_user_reservations');
     }
 
+    #[Route('/ajax/approve-reservation/{id}', name: 'app_user_approve_reservation')]
+    public function approve_reservation(Reservation $reservation, UserRepository $userRepository, MailService $mailService, EntityManagerInterface $entityManagerInterface) {
+        $user = $userRepository->find($this->getUser());
+        if ($user == $reservation->getRoom()->getOwner()) {
+            $reservation->setApproved(true);
+            $entityManagerInterface->flush();
+            $mailService->reservation_approved($reservation);
+        }
+
+        return new JsonResponse(['approved' => $reservation->isApproved()]);
+    }
+
 
     #[Route('/calendars', name: 'app_user_calendars')]
     public function user_calendars(UserRepository $userRepository)
@@ -265,7 +251,7 @@ class UserController extends AbstractController
         $calendars = $user->getCalendars();
         $urls = [];
         foreach ($calendars as $calendar) {
-            $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['base_user' => base64_encode($user->getId()), 'slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+            $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
         }
         return $this->render('/user/calendars/list.html.twig', [
             'calendars' => $calendars,
@@ -280,7 +266,7 @@ class UserController extends AbstractController
         $editable = $user == $calendar->getUser();
         $reservations = [];
         $rooms = [];
-        $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['base_user' => base64_encode($user->getId()), 'slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $urls[$calendar->getId()] = $this->generateUrl('app_public_calendar_view', ['slug' => $calendar->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         foreach ($calendar->getRoom() as $room) {
             $rooms[] = $room;
@@ -302,7 +288,8 @@ class UserController extends AbstractController
             'calendar' => $calendar,
             'rooms' => $rooms,
             'editable' => $editable,
-            'urls' => $urls
+            'urls' => $urls,
+            'reservation_button' => true
         ]);
     }
 
@@ -330,7 +317,7 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $calendar->setSlug($sluggerInterface->slug($calendar->getName()));
+            $calendar->setSlug($sluggerInterface->slug(uniqid() . '-' . $calendar->getName()));
             $entityManagerInterface->persist($calendar);
             $entityManagerInterface->flush();
 

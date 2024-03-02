@@ -26,6 +26,6 @@
         "@fullcalendar/bootstrap5": "^6.0.3",
         "bootstrap-icons": "^1.10.3",
         "fullcalendar": "^6.0.3",
-        "jquery": "^3.6.3"
+        "jquery": "^3.7.1"
     }
 }

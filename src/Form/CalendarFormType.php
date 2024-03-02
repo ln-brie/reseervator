@@ -7,6 +7,7 @@ use App\Entity\Room;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +23,8 @@ class CalendarFormType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Nom du calendrier',
                 'required' => true
-            ]);
+            ])
+            ->add('description', TextAreaType::class);
 
         if (!empty($rooms) && $calendar->isNative() == false) {
             $builder->add('room', EntityType::class, [

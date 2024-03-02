@@ -7,38 +7,50 @@
 {% block body %}
 	<div class="container">
 		<div class="card bg-success p-5">
-			<h2 class="text-center text-light mb-5">{{calendar.name}}</h2>
+			<h2 class="text-center text-light mb-2">{{calendar.name}}</h2>
+
 			<div class="d-flex">
-				<div class="col-2">
+				<div class="col-2 pe-3">
 					{% for room in rooms %}
 						<p style="color: {{ room.color }}">
 							<i data-feather="circle"></i>
 							{{ room.name }}</p>
 					{% endfor %}
+					{% if reservation_button %}
+
+						<div>
+							<a class="btn btn-primary" href="{{ path('reservation_app_public_reservation', {'slug': calendar.slug}) }}">
+								Ajouter une réservation</a>
+						</div>
+					{% endif %}
 				</div>
 
 				<div class="col-10" data-controller="calendar" data-calendar-events-value="{{ reservations }}">
+					{% if calendar.description != '' %}
+						<div class="mb-4 calendar-description">
+							{{ calendar.description }}
+						</div>
+					{% endif %}
+
 					<div id="calendar"></div>
 					{% include "calendar/modal.html.twig" %}
 
+					{% if editable is defined and editable == true %}
+						<div class="d-flex mx-auto mt-3 col-6 justify-content-around">
+							<a class="btn btn-primary text-decoration-none fs-6" href="#" data-controller="publiclink" data-publiclink-link-value="{{ urls[calendar.id] }}" data-action="publiclink#copyToClipboard">
+								Copier le lien public
+							</a>
+
+							<a class="btn btn-secondary text-decoration-none" href="{{ path('app_user_calendar_details', {'id': calendar.id}) }}">
+								Modifier le calendrier</i>
+						</a>
+						{% if calendar.native == false %}
+							<a class="btn btn-danger text-decoration-none" data-controller="deleteitem" data-deleteitem-url-value="{{ path('app_user_calendar_delete', {'id': calendar.id}) }}" data-action="click->deleteitem#delete" data-deleteitem-label-value="ce calendrier">
+								Supprimer le calendrier
+							</a>
+						</div>
+					{% endif %}
 				</div>
-			</div>
-			{% if editable is defined and editable == true %}
-				<div class="d-flex mx-auto col-6 justify-content-around">
-					<a class="btn btn-primary text-decoration-none fs-6" href="#" data-controller="publiclink" data-publiclink-link-value="{{ urls[calendar.id] }}" data-action="publiclink#copyToClipboard">
-
-
-						Copier le lien public
-					</a>
-
-					<a class="btn btn-secondary text-decoration-none" href="{{ path('app_user_calendar_details', {'id': calendar.id}) }}">
-						Modifier le calendrier</i>
-				</a>
-				{% if calendar.native == false %}
-					<a class="btn btn-danger text-decoration-none" data-controller="deleteitem" data-deleteitem-url-value="{{ path('app_user_calendar_delete', {'id': calendar.id}) }}" data-action="click->deleteitem#delete" data-deleteitem-label-value="ce calendrier">
-						Suuprimer le calendrier
-					</a>
-				{% endif %}
 			</div>
 		{% endif %}
 	</div>
