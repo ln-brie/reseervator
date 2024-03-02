@@ -42,12 +42,18 @@ class RoomRepository extends ServiceEntityRepository
    /**
     * @return Room[] Returns an array of Room objects
     */
-   public function getSameName($value): array
+   public function getSameName($value, $id = null): array
    {
-       return $this->createQueryBuilder('r')
+       $query =  $this->createQueryBuilder('r')
            ->andWhere('r.name = :val')
-           ->setParameter('val', $value)
-           ->getQuery()
+           ->setParameter('val', $value);
+
+           if ($id) {
+            $query->andWhere('r.id != :id')
+            ->setParameter('id', $id);
+           }
+
+           return $query->getQuery()
            ->getResult()
        ;
    }
